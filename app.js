@@ -34,7 +34,7 @@ const a_text = document.querySelector('#a_text');
 const b_text = document.querySelector('#b_text');
 const c_text = document.querySelector('#c_text');
 const d_text = document.querySelector('#d_text');
-const submitBtn = document.querySelector('#sibmit');
+const submitBtn = document.querySelector('#submit');
 
 // Index for every new question
 let currentQuizQuestion = 0;
@@ -45,6 +45,10 @@ loadQuiz();
 
 // Create Quiz 
 function loadQuiz(){
+
+    // Deselect Answers
+    deselectAnswers();
+
     const currentQuizData = quizData[currentQuizQuestion];
 
     // Question
@@ -56,5 +60,52 @@ function loadQuiz(){
     c_text.innerHTML = currentQuizData.c;
     d_text.innerHTML = currentQuizData.d;
 
-    
+
 }
+
+// Deselect Answers
+function deselectAnswers(){
+    answerElements.forEach((answerElement) => {
+        answerElement.checked = false;
+    })
+}
+
+// Gei id of selected answer
+function getSelected(){
+    let answer;
+
+    // If element is selected => get it id
+    answerElements.forEach((answerEl) => {
+        if(answerEl.checked){
+            answer = answerEl.id;
+        }
+    })
+
+    return answer;
+}
+
+// Submit Answer
+submitBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    const answer = getSelected();
+    
+    // Check the answer
+    if(answer){
+        if(answer === quizData[currentQuizQuestion].correct){
+            // Increase scores
+            score++;
+        }
+        // Next Quetion
+        currentQuizQuestion++
+
+        if(currentQuizQuestion < quizData.length){
+            loadQuiz();
+        } else {
+            // Show total scores
+            quiz.innerHTML = `<h2>Your total scores is ${score}</h2>
+            <button onClick="location.reload()">Reload</button>
+            `;
+        }
+    }
+
+});
